@@ -1,0 +1,147 @@
+index.html<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>메키 데미지 계산기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1, h2 {
+      margin-top: 30px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+      font-size: 13px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    input {
+      width: 95%;
+    }
+    button {
+      margin-top: 15px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .result-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .result-box {
+      border: 2px solid #888;
+      padding: 10px;
+      width: 440px;
+    }
+    .result-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .placeholder {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+<h1>메키 데미지 계산기</h1>
+<p>
+이 계산기는 장비, 큐브, 옵션 변경 시<br>
+<strong>스텟 효율</strong>과 <strong>실질 평균 데미지</strong>를 비교하기 위한 도구입니다.
+</p>
+<!-- ================= 입력 영역 ================= -->
+
+<h2>입력 값</h2>
+
+<table>
+  <tr><th>항목</th><th>값</th></tr>
+  <tr><td>공격력</td><td><input type="number" id="atk" placeholder="스킬 버프 안걸린 상태가 좋음" ></td></tr>
+  <tr><td>크리티컬 확률 (%)</td><td><input type="number" id="critRate" placeholder="95.8" ></td></tr>
+  <tr><td>크리티컬 데미지 (%)</td><td><input type="number" id="critDmg" placeholder="예: 110.8"></td></tr>
+  <tr><td>공격 속도 (%)</td><td><input type="number" id="atkSpeed" placeholder="예: 63.2"></td></tr>
+  <tr><td>스텟 비례 데미지 (%)</td><td><input type="number" id="mainStat" placeholder="예: 175.2"></td></tr>
+  <tr><td>데미지 (%)</td><td><input type="number" id="dmg" placeholder="예: 292.1(육각팬던트 효과 주의)"></td></tr>
+  <tr><td>데미지 증폭 (%)</td><td><input type="number" id="dmgAmp" placeholder="예: 20"></td></tr>
+  <tr><td>방어 관통력 (%)</td><td><input type="number" id="ignoreDef" placeholder="예: 6"></td></tr>
+  <tr><td>보스 데미지 (%)</td><td><input type="number" id="bossDmg" placeholder="예: 87.3"></td></tr>
+  <tr><td>일반 데미지 (%)</td><td><input type="number" id="normalDmg" placeholder="예: 45.1"></td></tr>
+  <tr><td>최소 데미지 배율 (%)</td><td><input type="number" id="minMul" placeholder="예: 120.3"></td></tr>
+  <tr><td>최대 데미지 배율 (%)</td><td><input type="number" id="maxMul" placeholder="예: 212.3"></td></tr>
+  <tr><td>최종 데미지 (%)</td><td><input type="number" id="finalDmg" placeholder="예: 21.3"></td></tr>
+  <tr><td>큐브 주스텟 (%)</td><td><input type="number" id="cubeMain" placeholder="귀찮으면 미입력, 정확한 주스텟 효율비율 계산을 위함.(스텟 비율, 데미지 계산에는 불필요)"></td></tr>
+</table>
+
+<button id="calcBtn">계산 후 결과 저장</button>
+
+<!-- ================= 결과 영역 ================= -->
+
+<h2>결과 비교 (최대 5개)</h2>
+
+<div class="result-container">
+
+  <!-- ===== 결과 #1 ===== -->
+  <div class="result-box">
+    <div class="result-title">결과 #1</div>
+
+    <div class="section-title">스텟 비율 / 효율 비율</div>
+    <table>
+      <tr>
+        <th>항목</th>
+        <th>스텟 비율</th>
+        <th>효율 비율</th>
+      </tr>
+      <tr><td>크리티컬</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>공격속도</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>주스텟</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>데미지</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>보스 데미지</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>일반 데미지</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+      <tr><td>데미지 배율</td><td class="placeholder">-</td><td class="placeholder">-</td></tr>
+    </table>
+
+    <div class="section-title">데미지 계산 결과</div>
+    <table>
+      <tr><th>항목</th><th>값</th></tr>
+      <tr><td>초당 평균 데미지</td><td class="placeholder">-</td></tr>
+      <tr><td>평균 보스 데미지</td><td class="placeholder">-</td></tr>
+      <tr><td>평균 일반 데미지</td><td class="placeholder">-</td></tr>
+      <tr><td>방어 관통 (%)</td><td class="placeholder">-</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 결과 #2 ~ #5 ===== -->
+  <div class="result-box"><div class="result-title">결과 #2 (비어있음)</div></div>
+  <div class="result-box"><div class="result-title">결과 #3 (비어있음)</div></div>
+  <div class="result-box"><div class="result-title">결과 #4 (비어있음)</div></div>
+  <div class="result-box"><div class="result-title">결과 #5 (비어있음)</div></div>
+
+</div>
+<script src="calc.js"></script>
+</body>
+<hr>
+
+<p>
+제작자 : <strong>스카니아17 워투</strong>
+</p>
+
+<p>
+추신 : <strong>스카니아17 백의 길드 화이팅!</strong>
+</p>
+</html>
